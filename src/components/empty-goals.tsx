@@ -1,4 +1,4 @@
-import letsStart from '../assets/lets-start-illustration.svg';
+import letsStart from '../assets/lets-start.svg';
 import logo from '../assets/logo-in-orbit.svg';
 
 import { Plus } from 'lucide-react';
