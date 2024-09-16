@@ -1,4 +1,4 @@
-export type Summary = {
+export type ISummary = {
     completed: number;
     total: number;
     goalsPerDay: Record<
