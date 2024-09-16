@@ -1,9 +1,12 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Plus } from 'lucide-react';
+import { createGoalCompletion } from '../http/create-goal-completion';
 import { getPendingGoals } from '../http/get-pending-goals';
 import { OutlineButton } from './ui/outline-button';
 
 export function PendingGoals() {
+    const queryClient = useQueryClient();
+
     const ONE_MINUTE_IN_MILLISECONDS = 1000 * 60;
 
     const { data } = useQuery({
@@ -11,6 +14,12 @@ export function PendingGoals() {
         queryKey: ['pendingGoals'],
         staleTime: ONE_MINUTE_IN_MILLISECONDS,
     });
+
+    const completeGoal = async (goalId: string) => {
+        await createGoalCompletion(goalId);
+        queryClient.invalidateQueries({ queryKey: ['summary'] });
+        queryClient.invalidateQueries({ queryKey: ['pendingGoals'] });
+    };
 
     if (!data) return null;
 
@@ -20,6 +29,7 @@ export function PendingGoals() {
                 <OutlineButton
                     key={pendingGoal.id}
                     disabled={pendingGoal.desiredWeeklyFrequency === pendingGoal.completionCount}
+                    onClick={() => completeGoal(pendingGoal.id)}
                 >
                     <Plus className="size-4 text-zinc-600" />
                     {pendingGoal.title}
